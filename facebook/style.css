@@ -1,0 +1,134 @@
+/* facebook/style.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 72px 0;
+}
+
+.left {
+    width: 500px;
+    padding-right: 32px;
+}
+
+.left .logo {
+    height: 106px;
+    margin: -28px;
+    margin-bottom: 20px;
+}
+
+.left h2 {
+    font-size: 28px;
+    font-weight: normal;
+    line-height: 32px;
+}
+
+.right {
+    width: 396px;
+}
+
+.login-box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.login-box input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    font-size: 17px;
+}
+
+.login-box input:focus {
+    outline: none;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px #e7f3ff;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    background-color: #166fe5;
+}
+
+.forgot-link {
+    display: block;
+    text-align: center;
+    color: #1877f2;
+    font-size: 14px;
+    margin: 12px 0;
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    border-bottom: 1px solid #dadde1;
+    margin: 20px 0;
+}
+
+.create-btn {
+    background-color: #42b72a;
+    border: none;
+    border-radius: 6px;
+    font-size: 17px;
+    line-height: 48px;
+    padding: 0 16px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+}
+
+.create-btn:hover {
+    background-color: #36a420;
+}
+
+.page-link {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.page-link a {
+    color: #1c1e21;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.page-link a:hover {
+    text-decoration: underline;
+}
