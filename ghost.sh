@@ -59,20 +59,40 @@ serveo_tunnel() {
     URL=$(grep -o "https://[0-9a-z]*\.serveo.net" .tunnel_log)
 }
 
-# Cloudflare tunnel
-cloudflare_tunnel() {
+#!/bin/bash
+
+# ... [Previous code remains same until cloudflare() function]
+
+cloudflare() {
     if ! command -v cloudflared &> /dev/null; then
-        echo -e "${RED}[!] cloudflared not found. Installing...${NC}"
+        echo -e "${RED}[!] Cloudflared not found. Installing...${NC}"
         wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cloudflared
         chmod +x cloudflared
         sudo mv cloudflared /usr/local/bin/
     fi
-    echo -e "${GREEN}[+] Starting Cloudflare tunnel...${NC}"
-    cloudflared tunnel --url http://localhost:8080 > .tunnel_log 2>&1 &
+    
+    echo -e "${GREEN}[+] Generating Cloudflare link...${NC}"
+    echo -e "${YELLOW}[!] Note: Cloudflare tunnels now require authentication${NC}"
+    echo -e "${BLUE}[+] Starting temporary tunnel...${NC}"
+    
+    # Use trycloudflare.com (no auth required)
+    cloudflared tunnel --url http://localhost:8080 2>&1 | tee .tunnel_log &
     TUNNEL_PID=$!
     sleep 10
+    
+    # Extract URL from logs
     URL=$(grep -o "https://[0-9a-z]*\.trycloudflare.com" .tunnel_log)
+    
+    if [ -z "$URL" ]; then
+        echo -e "${RED}[!] Failed to get Cloudflare URL${NC}"
+        echo -e "${YELLOW}Possible solutions:${NC}"
+        echo "1. Wait longer (sometimes takes 15+ seconds)"
+        echo "2. Use Serveo instead (more reliable)"
+        return 1
+    fi
 }
+
+# ... [Rest of the script remains same]
 
 # Cleanup
 cleanup() {
